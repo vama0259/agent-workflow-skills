@@ -12,6 +12,6 @@ Known limits: the playbook depends on the host following instructions, authorize
 - Eleven repository-relative Markdown references and the synthetic JSON fixture: resolved and parsed successfully.
 - Sanitization scan and content review: public files contain synthetic examples and no copied live messages, account IDs, resume links, local source paths or private employer facts.
 - Official skills CLI: discovered one skill and completed a project-scoped copy install with Codex, Claude Code and Cursor selected. Its summary showed the shared `.agents/skills` copy and `.claude/skills` copy. This verifies packaging, not live host behavior.
-- `skills find career-supervisor`: returned no listing at publication time. Directory indexing remains unverified; installation and directory discovery are distinct checks.
+- `skills find career-supervisor`: initially returned no listing. A subsequent browser check verified the live [skills.sh detail page](https://skills.sh/vama0259/agent-workflow-skills/career-supervisor), including the skill content and install command. Search indexing and install counts may update separately.
 
 No automated behavioral benchmark was run for this release. The scenario fixtures and initial baseline review are documented without claiming measured improvement.

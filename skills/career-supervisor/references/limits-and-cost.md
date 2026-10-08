@@ -16,7 +16,7 @@ If a rate limit, quota, tool failure or model interruption occurs:
 
 ## Honest estimates
 
-For a user-reported budget of approximately ₹2,000/month for ChatGPT, report that as a personal budget estimate only. The exact plan, taxes, billing amount, model allowances and reset behavior require current account/provider information. This repository does not claim to run an unlimited agent on that budget.
+For an illustrative budget of approximately ₹2,000/month for ChatGPT, treat that as a budget assumption only. The exact plan, taxes, billing amount, model allowances and reset behavior require current account/provider information. This repository does not claim to run an unlimited agent on that budget.
 
 Illustration only: ₹2,000 / 30 days ≈ ₹67/day is an accounting allocation, **not measured daily agent usage**. Dividing that by a chosen number of runs is not a provider per-run price and cannot predict quota consumption. For an independently billed API, estimate input tokens × current input rate plus output tokens × current output rate and tool charges, clearly stating assumptions, currency conversion and tax exclusions. Do not apply API pricing to a ChatGPT subscription.
 

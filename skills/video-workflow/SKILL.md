@@ -9,6 +9,8 @@ Use this playbook to pick a tool, not to make the video. Each tool has its own s
 
 If the user names a tool, use it. Still apply the gates below and say plainly if the request breaks one.
 
+These skills may run from the separate video kit that `scripts/install-video-kit.sh` builds. It holds the upstream tools pinned and loads only through `--add-dir`. There, each wrapper's "In the video kit" note replaces its install steps. Never install video skills into `~/.claude/skills` from a kit session.
+
 ## 1. Capture the brief in one round
 
 Ask only what the request leaves open, in a single message:

@@ -24,6 +24,13 @@ git checkout 0ac8bf2b31942376cb6b8c4074715595d512acd2   # optional: pin the anal
 npm install
 ```
 
+**In the video kit** (`VIDEO_KIT` is set, or `<kit>/bin/claude-video` sits three folders above this skill), copy the pinned kit for each film instead of cloning, then install as above:
+
+```bash
+cp -R "<kit>/tools/ClaudeAnimationBase" my-animation && rm -rf my-animation/.git
+cd my-animation && npm install
+```
+
 Run every command from the project root, because paths are relative to it. If Chrome is not in a standard location, pass `--chrome=<path>` or set `CHROME_PATH`; the renderer also finds Playwright's Chromium.
 
 Pick render flags for the machine:

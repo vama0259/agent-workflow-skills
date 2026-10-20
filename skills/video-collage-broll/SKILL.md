@@ -25,7 +25,9 @@ Don't use it when the user needs exact layer or occlusion control, camera moves,
 
 ## Setup
 
-Install the upstream skill pinned to the analysed commit, rather than the moving `main` branch the README uses:
+**In the video kit** (`VIDEO_KIT` is set, or `<kit>/bin/claude-video` sits three folders above this skill), `collage-broll-explainers` is already installed at the analysed commit; skip the download. The spend gate still applies.
+
+Otherwise, install the upstream skill pinned to the analysed commit, rather than the moving `main` branch the README uses:
 
 ```bash
 mkdir -p ~/.claude/skills/collage-broll-explainers

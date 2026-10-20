@@ -35,6 +35,14 @@ npx hyperframes doctor --json
 npx hyperframes browser ensure            # if doctor reports no usable Chrome
 ```
 
+**In the video kit.** You are in the kit when `VIDEO_KIT` is set, or when this skill's folder is `<kit>/.claude/skills/video-hyperframes` and `<kit>/bin/claude-video` exists. HyperFrames' skills are already in `<kit>/.claude/skills` at commit `b7fa007`, so skip the plugin and `npx skills add`. Run every CLI command, including the `npx hyperframes` commands the upstream skills name, as:
+
+```bash
+HYPERFRAMES_SKIP_SKILLS=1 HYPERFRAMES_NO_TELEMETRY=1 npx hyperframes@0.8.181 <command>
+```
+
+This keeps the CLI at the version the skills were written for, stops it installing skills into `~/.claude/skills`, and keeps telemetry and feedback reports off. Never run `skills update`, bare `skills` or `--all` installs from the kit.
+
 Inside the Claude Code plugin, run the CLI through the plugin's pinned wrapper, as its own skill instructs (`node "<plugin root>/skills/hyperframes/scripts/plugin-cli.mjs" <command>`). Don't run `npx hyperframes skills --all` inside a HyperFrames source checkout.
 
 ## Guardrails to apply before the first render

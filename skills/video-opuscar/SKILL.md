@@ -33,6 +33,14 @@ git checkout b5e8ef93930b6d828f352055a689320f138237b1
 claude
 ```
 
+**In the video kit** (`VIDEO_KIT` is set, or `<kit>/bin/claude-video` sits three folders above this skill), skip the plugin. The `lemo-opuscar` skill and a library pinned at `b5e8ef9` are already in the kit. Run the skill's setup with the library path set; the launcher sets it already, and the variable keeps setup from cloning `main` into `~/lemo-opuscar`:
+
+```bash
+LEMO_OPUSCAR_HOME="<kit>/tools/lemo-opuscar" sh "<kit>/.claude/skills/lemo-opuscar/scripts/setup.sh"
+```
+
+Its Node packages and Python venv then stay inside the kit.
+
 Install tiers, which the agent runs and the user should hear about in the one round of questions:
 
 - **Core:** about 350 MB (Playwright headless shell, three.js, numpy and audio packages).

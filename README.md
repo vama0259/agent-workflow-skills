@@ -37,6 +37,31 @@ Replace `claude-code` with `codex`, `cursor` or another supported agent, or omit
 
 Installing these skills grants no account access. The video skills download upstream tools only when you use them.
 
+### Video kit: everything local, loaded only on demand
+
+Skills in `~/.claude/skills` load their descriptions into every session. To keep video tooling out of normal sessions, install it into a separate folder instead:
+
+```bash
+git clone https://github.com/vama0259/agent-workflow-skills.git
+sh agent-workflow-skills/scripts/install-video-kit.sh        # builds ~/claude-video-kit (or pass a folder)
+~/claude-video-kit/bin/claude-video                          # a Claude Code session with the kit loaded
+```
+
+The kit holds the six `video-*` skills plus all five upstream tools, pinned to the analysed commits:
+- HyperFrames' skills
+- onetake, without its demo films
+- the collage B-roll skill
+- the Clawd starter kit
+- the Lemo-Opuscar library and skill
+
+It adds about 100 MB and the upstream licence files. Heavy dependencies (npm packages, Python venvs, Chrome, voice models) still install on first use.
+
+- **Normal sessions:** nothing loads, so there is no token cost.
+- **Video sessions:** the launcher runs `claude --add-dir <kit>`, or you run `/add-dir ~/claude-video-kit` inside a session. That adds the skill descriptions, roughly 4,000 tokens, most of it HyperFrames' 21 skills.
+- **Privacy and pinning:** prefer the launcher. It turns off HyperFrames telemetry, feedback reports and its skill auto-install, which would otherwise write to `~/.claude/skills`. It also points Lemo-Opuscar at the pinned library. With `/add-dir`, the `video-*` skills set the same variables on each command. But an upstream HyperFrames or Lemo-Opuscar skill that triggers on its own does not, and may install into `~/.claude/skills` or clone `~/lemo-opuscar`.
+
+Re-running the installer from a newer checkout updates the kit in place. Delete the folder to remove it. The script needs `git` and a POSIX shell (macOS, Linux, or WSL or Git Bash on Windows).
+
 ## AI video production
 
 The video skills don't contain the video tools. Each one tells the agent when to use a tool, how to install it at a pinned version, which gates to apply (licence, paid services, privacy, approvals) and what to deliver. The upstream projects keep their own code, licences and creative workflows.

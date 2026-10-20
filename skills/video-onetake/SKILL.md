@@ -25,6 +25,8 @@ Don't use it for long-form, talking heads, editing existing footage, or vertical
 
 ## Setup
 
+**In the video kit** (`VIDEO_KIT` is set, or `<kit>/bin/claude-video` sits three folders above this skill), onetake is already installed at `<kit>/.claude/skills/onetake`, pinned and without its demo films. Skip the clone; the licence gate still applies. Otherwise:
+
 ```bash
 git clone https://github.com/feitangyuan/onetake.git ~/.claude/skills/onetake     # Claude Code
 git clone https://github.com/feitangyuan/onetake.git ~/.agents/skills/onetake     # Codex and other agents

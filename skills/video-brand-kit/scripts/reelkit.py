@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Keep a reel inside its brand kit. Standard library only.
 
+  reelkit.py init   <project> --series KEY [--brand NAME]          start a reel: kit + storyboard in the project
   reelkit.py lint   <project> [--brand NAME | --kit frame.md]     off-kit fonts, colours, tiny text, wrong canvas
   reelkit.py speak  <script.txt> [--brand NAME] [--voice ID] [--lang L] [-o vo.txt]
   reelkit.py verify <script.txt> <transcript.json> [--brand NAME] [--max-wer 0.08]
 
 --brand NAME uses brands/NAME/frame.md and brands/NAME/lexicon.json (which extends the default lexicon).
+Without --brand, the brand named in brands/default is used; --brand none uses the blank kit in assets/.
 
 Exit status: 0 pass, 1 problems found, 2 bad input.
 """
@@ -132,8 +134,19 @@ def load_lexicon(path):
     return terms, keep, never
 
 
+def default_brand():
+    try:
+        return open(os.path.join(BRANDS, "default"), encoding="utf-8").read().strip() or None
+    except OSError:
+        return None
+
+
 def resolve_brand(args):
-    if not getattr(args, "brand", None):
+    if not hasattr(args, "brand"):
+        return
+    if args.brand is None and getattr(args, "kit", DEFAULT_KIT) == DEFAULT_KIT:
+        args.brand = default_brand()
+    if not args.brand or args.brand == "none":
         return
     folder = os.path.join(BRANDS, args.brand)
     if not os.path.isdir(folder):
@@ -142,6 +155,57 @@ def resolve_brand(args):
         args.kit = os.path.join(folder, "frame.md")
     if hasattr(args, "lexicon") and args.lexicon == DEFAULT_LEXICON and os.path.exists(os.path.join(folder, "lexicon.json")):
         args.lexicon = os.path.join(folder, "lexicon.json")
+
+
+def kit_series(kit):
+    """The series block of a kit: {key: {chip, color, cta, voice, ...}}."""
+    series, key = {}, None
+    for line in section(frontmatter(kit), "series").splitlines():
+        m = re.match(r"^  ([\w-]+):\s*$", line)
+        if m:
+            key = m.group(1)
+            series[key] = {}
+            continue
+        m = re.match(r"^    ([\w-]+):\s*(.*?)\s*(?:#.*)?$", line)
+        if key and m:
+            series[key][m.group(1)] = m.group(2).strip('"')
+    return series
+
+
+def cmd_init(args):
+    series = kit_series(args.kit)
+    if series and args.series not in series:
+        print(f"✗ choose --series from: {', '.join(series)}")
+        return 2
+    os.makedirs(args.project, exist_ok=True)
+    kit_text = open(args.kit, encoding="utf-8").read()
+    open(os.path.join(args.project, "frame.md"), "w", encoding="utf-8").write(kit_text)
+    print(f"✓ {args.project}/frame.md ← {os.path.relpath(args.kit, os.path.join(HERE, '..'))}")
+    board = os.path.join(args.project, "STORYBOARD.md")
+    if os.path.exists(board):
+        print(f"- kept existing {board}")
+        return 0
+    s = series.get(args.series, {})
+    lines = [
+        f"# {s.get('chip', args.series).title()} reel",
+        "",
+        f"- Brand: {args.brand or 'none'} (frame.md in this folder is the kit; use nothing outside it)",
+        f"- Series: {args.series} · chip \"{s.get('chip', '')}\" in {s.get('color', '')} · voice: {s.get('voice', '')}",
+        f"- CTA: {s.get('cta', '')}",
+        "- Length: 20-45 s · English · one idea · hook of 6 words max, on screen in frame 1",
+        "",
+        "| Time | Words (as written) | Layout L1-L8 | Recipe R1-R8 | Transition out | SFX |",
+        "| --- | --- | --- | --- | --- | --- |",
+        "| 0.0-1.5 | HOOK | | R1 | | |",
+        "| | | | | | |",
+        "| last 2 s | " + s.get("cta", "CTA") + " | | R8 | loop | |",
+        "",
+        "Checklist before the draft render: references/edit-grammar.md §7, then `reelkit.py lint`.",
+        "",
+    ]
+    open(board, "w", encoding="utf-8").write("\n".join(lines))
+    print(f"✓ {board}")
+    return 0
 
 
 def apply_terms(text, terms):
@@ -242,6 +306,11 @@ def cmd_verify(args):
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
+    init = sub.add_parser("init", help="start a reel project with the brand kit and a storyboard")
+    init.add_argument("project")
+    init.add_argument("--series", required=True)
+    init.add_argument("--brand")
+    init.add_argument("--kit", default=DEFAULT_KIT)
     lint = sub.add_parser("lint", help="find off-kit fonts, colours and sizes in a HyperFrames project")
     lint.add_argument("project")
     lint.add_argument("--kit", default=DEFAULT_KIT)
@@ -263,7 +332,7 @@ def main():
     args = p.parse_args()
     try:
         resolve_brand(args)
-        return {"lint": cmd_lint, "speak": cmd_speak, "verify": cmd_verify}[args.cmd](args)
+        return {"init": cmd_init, "lint": cmd_lint, "speak": cmd_speak, "verify": cmd_verify}[args.cmd](args)
     except (OSError, ValueError) as e:
         print(f"✗ {e}")
         return 2

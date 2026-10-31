@@ -1,9 +1,11 @@
 ---
 name: video-brand-kit
-description: Closed brand kit and edit grammar for vertical AI reels, Shorts and TikToks - fixed fonts, colours, safe zones, frame layouts, transitions, caption style, sound and English voiceover rules - plus a checker that fails off-kit fonts or colours and mispronounced voiceovers. Use for any 9:16 reel or short-form content video, and whenever edits look sparse or generic, transitions feel random, or the voiceover sounds non-English (Hindi voice or phonemizer, mangled brand names). Works with video-hyperframes as the design spec (frame.md) and with any other editor as a written spec.
+description: The default brand for every video (currently @omaiverse, set in brands/default). Closed brand kit and edit grammar for vertical AI reels, Shorts and TikToks - fixed fonts, colours, safe zones, frame layouts, transitions, caption style, sound and English voiceover rules - plus a checker that fails off-kit fonts or colours and mispronounced voiceovers. Use for any 9:16 reel or short-form content video, and whenever edits look sparse or generic, transitions feel random, or the voiceover sounds non-English (Hindi voice or phonemizer, mangled brand names). Works with video-hyperframes as the design spec (frame.md) and with any other editor as a written spec.
 ---
 
 # Reel brand kit
+
+**Every reel and video uses the default brand** named in [`brands/default`](brands/default), currently `omaiverse`, unless the person names another brand or says to use none. Start every reel with `reelkit.py init`, which copies the kit into the project, so no reel is built without it.
 
 This skill makes every reel look and sound like one brand. The kit is a **closed set**: only the fonts, colours, layouts, transitions, captions and voices in [`assets/frame.md`](assets/frame.md) are allowed. If a reel seems to need something else, ask the person to add it to the kit; never improvise a one-off.
 
@@ -19,21 +21,27 @@ Files:
 
 ## 1. Set up the kit once
 
-1. If a folder in `brands/` matches the person or their handle (for example `brands/omaiverse/` for @omaiverse), use it: its `frame.md`, `lexicon.json` and `series.md` replace the defaults.
-2. Otherwise ask in one message for brand name, handle, CTA and whether to keep the default palette, then create `brands/<name>/` from `assets/frame.md`, with a `lexicon.json` that has `"extends": "../../assets/lexicon.json"`. Offer to change at most the accent colours (`volt`, `signal`); keep everything else unless they ask. Changes to the kit are the person's decision, made once, not per reel.
+1. The brand in `brands/default` is the person's brand: its `frame.md`, `lexicon.json` and `series.md` apply to every reel. `reelkit.py` uses it whenever `--brand` is left out; `--brand none` uses the blank kit in `assets/`.
+2. For a different brand, use its folder in `brands/` if one exists. Otherwise ask in one message for brand name, handle, CTA and whether to keep the default palette, then create `brands/<name>/` from `assets/frame.md`, with a `lexicon.json` that has `"extends": "../../assets/lexicon.json"`. Offer to change at most the accent colours (`volt`, `signal`); keep everything else unless they ask. Changes to the kit are the person's decision, made once, not per reel.
 
 ## 2. Every reel
 
-1. **Pick the series and copy the kit into the project:** the brand's `frame.md` → `<project>/frame.md`, and read that series' playbook in the brand's `series.md`. HyperFrames reads `frame.md` as its design spec (`video-hyperframes`). With any other editor, follow it as a written spec.
+1. **Start the project with the kit.** Pick the series from the brand's `series.md` (ask only if the topic does not make it clear), then:
+
+   ```bash
+   python3 <skill>/scripts/reelkit.py init <project> --series claude-skills
+   ```
+
+   This copies the brand's `frame.md` into the project, where HyperFrames reads it as the design spec (`video-hyperframes`), and writes a `STORYBOARD.md` with the series chip, colour, voice and call to action filled in. With HyperFrames, run `npx hyperframes init` first (it refuses a folder that is not empty), then `reelkit.py init` on the same folder. Read that series' playbook. With any other editor, follow `frame.md` as a written spec.
 2. **Script:** follow `references/edit-grammar.md` §1. English only, one idea, 20-45 s, a 6-word-max hook.
-3. **Beat sheet:** write `STORYBOARD.md` with one row per beat: time, words, layout (L1-L8), recipe (R1-R8), transition out (T1-T8), SFX. Check it against §7 of the edit grammar before building anything. Show it to the person for approval.
+3. **Beat sheet:** write `STORYBOARD.md` with one row per beat: time, words, layout (L1-L8), recipe (R1-R8), transition out (T1-T9), SFX, filling in the table `init` wrote. Check it against §7 of the edit grammar before building anything. Show it to the person for approval.
 4. **Voice** (`references/voiceover.md`):
 
    ```bash
-   python3 <skill>/scripts/reelkit.py speak script.txt --brand omaiverse --voice af_heart -o vo.txt
+   python3 <skill>/scripts/reelkit.py speak script.txt --voice af_heart -o vo.txt
    npx hyperframes tts --text-file vo.txt --voice af_heart --lang en-us --output assets/vo.wav
    npx hyperframes transcribe assets/vo.wav --model small.en --json
-   python3 <skill>/scripts/reelkit.py verify script.txt assets/transcript.json --brand omaiverse
+   python3 <skill>/scripts/reelkit.py verify script.txt assets/transcript.json
    ```
 
    Never use a Hindi Kokoro voice (`hf_*`, `hm_*`) or `--lang hi` for English. Synthesise 1-3 sentences per call, never one caption at a time. Fix failures through the lexicon, then re-run.
@@ -41,7 +49,7 @@ Files:
 6. **Lint, then preview:**
 
    ```bash
-   python3 <skill>/scripts/reelkit.py lint <project> --brand omaiverse
+   python3 <skill>/scripts/reelkit.py lint <project>
    npx hyperframes lint && npx hyperframes check --snapshots
    ```
 

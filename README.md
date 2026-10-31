@@ -125,7 +125,7 @@ HyperFrames reads its [`frame.md`](skills/video-brand-kit/assets/frame.md) as th
 
 The [voiceover notes](skills/video-brand-kit/references/voiceover.md) explain a common failure: a Hindi Kokoro voice, or `--lang hi`, sends English through the Hindi phonemizer, which turns numbers into Hindi words and adds stray sounds.
 
-A filled example lives in [`brands/omaiverse/`](skills/video-brand-kit/brands/omaiverse/frame.md), the kit for @omaiverse. It has six series (AI Breakdown, Claude Skills, SDE & AI Jobs, MBA & Business, Lifestyle, Clubs), each with its own chip colour and a [playbook](skills/video-brand-kit/brands/omaiverse/series.md). `reelkit.py --brand omaiverse` checks against it.
+A filled example lives in [`brands/omaiverse/`](skills/video-brand-kit/brands/omaiverse/frame.md), the kit for @omaiverse. It has six series (AI Breakdown, Claude Skills, SDE & AI Jobs, MBA & Business, Lifestyle, Clubs), each with its own chip colour and a [playbook](skills/video-brand-kit/brands/omaiverse/series.md). It is the default brand (`brands/default`): `video-workflow` loads the kit for every video, `reelkit.py init <project> --series <key>` starts each reel with it, and every check uses it unless `--brand` says otherwise.
 
 Example prompt: "Use video-workflow and video-brand-kit for omaiverse: a 30 s Claude Skills reel, English voiceover, captions."
 

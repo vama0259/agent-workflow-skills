@@ -72,7 +72,7 @@ Ask once, in the same round as the creative questions:
    ```
 
 4. For renders longer than a few minutes, set `HYPERFRAMES_RENDER_DETACHED=1` so the render survives the agent process. Frames can use about 25 GB per minute at 1080p30 on some paths; check free disk first.
-5. For a reel or a branded series, copy `video-brand-kit`'s `assets/frame.md` to the project root before the first scene and follow that skill's voice steps: an English voice (`a*` or `b*`, never `h*`) with `--lang en-us` or `en-gb`.
+5. For every video, after `npx hyperframes init`, run `video-brand-kit`'s `reelkit.py init <project> --series <key>` so the default brand's `frame.md` is in the project root before the first scene, and follow that skill's voice steps: an English voice (`a*` or `b*`, never `h*`) with `--lang en-us` or `en-gb`.
 6. To assemble clips from other `video-*` tools, place their MP4s as media clips in a `general-video` composition and keep each clip's source credits.
 
 ## Deliver

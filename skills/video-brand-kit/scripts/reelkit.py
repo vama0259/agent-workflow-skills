@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Keep a reel inside its brand kit. Standard library only.
 
-  reelkit.py lint   <project> [--kit frame.md]           off-kit fonts, colours, tiny text, wrong canvas
-  reelkit.py speak  <script.txt> [--voice ID] [--lang L] [-o vo.txt] [--lexicon lexicon.json]
-  reelkit.py verify <script.txt> <transcript.json> [--max-wer 0.08]
+  reelkit.py lint   <project> [--brand NAME | --kit frame.md]     off-kit fonts, colours, tiny text, wrong canvas
+  reelkit.py speak  <script.txt> [--brand NAME] [--voice ID] [--lang L] [-o vo.txt]
+  reelkit.py verify <script.txt> <transcript.json> [--brand NAME] [--max-wer 0.08]
+
+--brand NAME uses brands/NAME/frame.md and brands/NAME/lexicon.json (which extends the default lexicon).
 
 Exit status: 0 pass, 1 problems found, 2 bad input.
 """
@@ -17,6 +19,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_KIT = os.path.join(HERE, "..", "assets", "frame.md")
 DEFAULT_LEXICON = os.path.join(HERE, "..", "assets", "lexicon.json")
+BRANDS = os.path.join(HERE, "..", "brands")
 SKIP_DIRS = {"node_modules", "renders", ".git", "assets", ".media", "dist"}
 CSS_GENERIC = {"inherit", "initial", "unset", "sans-serif", "serif", "monospace", "system-ui"}
 
@@ -120,7 +123,25 @@ SHORT_CHARS = 25
 
 def load_lexicon(path):
     data = json.load(open(path, encoding="utf-8"))
-    return data.get("terms", {}), set(data.get("keep_as_written", [])), data.get("never_write", {})
+    terms, keep, never = {}, set(), {}
+    if data.get("extends"):
+        terms, keep, never = load_lexicon(os.path.join(os.path.dirname(path), data["extends"]))
+    terms.update(data.get("terms", {}))
+    keep |= set(data.get("keep_as_written", []))
+    never.update(data.get("never_write", {}))
+    return terms, keep, never
+
+
+def resolve_brand(args):
+    if not getattr(args, "brand", None):
+        return
+    folder = os.path.join(BRANDS, args.brand)
+    if not os.path.isdir(folder):
+        raise ValueError(f"no brand folder {folder}")
+    if hasattr(args, "kit") and args.kit == DEFAULT_KIT:
+        args.kit = os.path.join(folder, "frame.md")
+    if hasattr(args, "lexicon") and args.lexicon == DEFAULT_LEXICON and os.path.exists(os.path.join(folder, "lexicon.json")):
+        args.lexicon = os.path.join(folder, "lexicon.json")
 
 
 def apply_terms(text, terms):
@@ -162,7 +183,7 @@ def cmd_speak(args):
             if re.search(rf"(?<!\w){re.escape(bad)}(?!\w)", line):
                 errors.append(f"line {n}: '{bad}' {why}")
         for tok in re.findall(r"\b[A-Z][A-Z0-9]{1,}\b", line):
-            if tok not in keep and tok not in terms:
+            if tok not in keep and tok not in terms and tok not in never:
                 warnings.append(f"line {n}: '{tok}' may be read letter by letter or as a word; add it to the lexicon")
     spoken = normalise(apply_terms(raw, terms))
     for n, line in enumerate(spoken.splitlines(), 1):
@@ -224,20 +245,24 @@ def main():
     lint = sub.add_parser("lint", help="find off-kit fonts, colours and sizes in a HyperFrames project")
     lint.add_argument("project")
     lint.add_argument("--kit", default=DEFAULT_KIT)
+    lint.add_argument("--brand")
     lint.add_argument("--allow-font-face", action="store_true", help="also accept families declared with @font-face")
     speak = sub.add_parser("speak", help="turn a script into the text the voice reads")
     speak.add_argument("script")
     speak.add_argument("--voice")
     speak.add_argument("--lang", default="en-us")
     speak.add_argument("--lexicon", default=DEFAULT_LEXICON)
+    speak.add_argument("--brand")
     speak.add_argument("-o", "--output")
     verify = sub.add_parser("verify", help="compare a voice transcript with the script")
     verify.add_argument("script")
     verify.add_argument("transcript")
     verify.add_argument("--lexicon", default=DEFAULT_LEXICON)
+    verify.add_argument("--brand")
     verify.add_argument("--max-wer", type=float, default=0.08)
     args = p.parse_args()
     try:
+        resolve_brand(args)
         return {"lint": cmd_lint, "speak": cmd_speak, "verify": cmd_verify}[args.cmd](args)
     except (OSError, ValueError) as e:
         print(f"✗ {e}")

@@ -63,7 +63,7 @@ components:
   screen-card:
     description: "UI capture or screen recording in a surface card: width 900-960 px, radius 32, 2 px line border, 0 0 120px signal at 25% glow. Fills the stage; never smaller than 840 px wide."
   chip:
-    description: "Pill, label type, ink text on volt (key fact) or paper text on signal (tool name). Height 64 px."
+    description: "Pill, label type, ink text on volt (key fact) or on signal (tool name). Height 64 px."
   caption-group:
     description: "2-3 words, centred in the caption zone, paper with stroke; the spoken word turns volt and scales 1.08; emphasis words (numbers, tool names, 'free', 'never') scale 1.15."
   grain:

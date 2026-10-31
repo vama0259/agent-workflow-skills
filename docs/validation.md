@@ -48,3 +48,10 @@ Scope: `video-brand-kit` is a design spec, a lexicon and a standard-library chec
 - Packaging: `skills add <repo> --list` discovered eight skills including `video-brand-kit`, and `scripts/install-video-kit.sh` copied it, with its assets, references and script, into the kit.
 
 Not done: no reel was rendered, and no retention or listening test was run. The safe-zone margins are a conservative reading of disagreeing third-party guides, not a Meta specification.
+
+### omaiverse brand — 31 October 2026
+
+- `brands/omaiverse/frame.md` parses as YAML: 14 colours and 6 series.
+- WCAG contrast was computed for every text and ground pair. The AI Breakdown and tool chips use ink text on `signal` (4.7:1), because paper text would be 3.8:1. Every other series chip with ink text is 6.4:1 or higher.
+- Brand lexicon: "omaiverse" as written phonemizes as "AH-may-verse", so it is respelled "Ohm AI verse". Niche terms were checked in en-us: IIT, IIM, NIT, OKR, IPO, EDM, USP, VIP, ESOPs, EBITDA, FAANG and CTC are respelled; SDE, MBA, LPA, GMAT, DSA, LeetCode and others are left as written. `reelkit.py speak --brand omaiverse` applied the brand terms and the default terms together, and rejected "APM".
+- `reelkit.py lint --brand omaiverse` accepted the series colours and flagged an off-kit hex.

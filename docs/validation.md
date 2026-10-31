@@ -33,3 +33,18 @@ Scope: the six `video-*` skills are routing and setup instructions around five u
   - Not tested: macOS, and a real `claude --add-dir` session loading the kit. That loading behaviour comes from the Claude Code skills and permissions docs.
 
 Not done: no video was rendered with any of the five tools, no paid service was called, and no upstream skill was run end to end. Upstream projects change quickly; re-check the pinned commits before relying on a detail.
+
+## Reel brand kit checks — 31 October 2026
+
+Scope: `video-brand-kit` is a design spec, a lexicon and a standard-library checker. Checks cover the claims it makes and the checker, not rendered reels.
+
+- Upstream claims: HyperFrames was read at `b7fa007` (the video kit's pin) and `a04b45a` (main on 31 October 2026) for voice-to-language mapping, the default voice, `tts` flags, bundled fonts, `frame.md` handling, caption placement and transition rules. Kokoro voice grades come from its `VOICES.md`.
+- Phonemizer: kokoro-onnx 0.6.1 with its bundled espeak-ng was run on the lexicon terms and test sentences in `en-us` and `hi`. The results behind each lexicon entry are in the skill's [research notes](../skills/video-brand-kit/references/research.md). No audio was synthesised or listened to.
+- `reelkit.py`, run on synthetic inputs:
+  - `lint` flagged an off-kit font, a hex colour, an `rgb()` colour and an 18 px size, and accepted kit colours written as `rgba()` and `#000`.
+  - `speak` rejected a Hindi voice, `--lang hi`, `am_adam`, Devanagari, a URL and "A I". It applied the lexicon and the `$`, `%`, `&` and `x` rules.
+  - `verify` passed a matching transcript (0%) and failed one with three wrong words (8.1%).
+- Metadata: the new `SKILL.md` and `frame.md` frontmatter parse as YAML, and the relative links resolve.
+- Packaging: `skills add <repo> --list` discovered eight skills including `video-brand-kit`, and `scripts/install-video-kit.sh` copied it, with its assets, references and script, into the kit.
+
+Not done: no reel was rendered, and no retention or listening test was run. The safe-zone margins are a conservative reading of disagreeing third-party guides, not a Meta specification.

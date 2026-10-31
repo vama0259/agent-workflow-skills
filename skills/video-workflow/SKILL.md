@@ -52,6 +52,10 @@ Use the first row that matches the deliverable, not a word mentioned in passing.
 
 When two rows fit, prefer the tool with no paid service, then the permissive licence, then the shorter setup.
 
+## Brand kit for reels
+
+For any 9:16 reel, Short or TikTok, or any content series that should look the same every time, also load `video-brand-kit` with the chosen tool. It fixes fonts, colours, layouts, transitions, captions and the English voice, and its `reelkit.py` checks the project and the voiceover. With HyperFrames, copy its `assets/frame.md` to the project root before the first scene.
+
 ## 4. Chain tools when one is not enough
 
 Hand off with files, not shared state: each tool writes an MP4 the next can place as a clip.

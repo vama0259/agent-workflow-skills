@@ -1,0 +1,41 @@
+{
+  "_about": "Spoken respellings applied by reelkit.py speak before text-to-speech. Keys are matched as whole words, case-sensitive, longest first. Each value was checked with espeak-ng en-us (the phonemizer HyperFrames' Kokoro uses); cloud voices benefit from the same respellings. Add your own words here, never in the script.",
+  "terms": {
+    "Claude": "Clawd",
+    "SaaS": "sass",
+    "LoRA": "Lora",
+    "Qwen": "Kwen",
+    "Veo": "Vayo",
+    "Udio": "You-dee-oh",
+    "Hailuo": "High low",
+    "DALL-E": "Dolly",
+    "Seedance": "Seed dance",
+    "Zapier": "Zappier",
+    "n8n": "N eight N",
+    "UX": "U X",
+    "SEO": "S E O",
+    "ROI": "R O I",
+    "xAI": "X A.I.",
+    "1080p": "ten eighty p",
+    "4K": "four K",
+    "9:16": "nine by sixteen",
+    "16:9": "sixteen by nine",
+    "1:1": "square",
+    "vs.": "versus",
+    "vs": "versus",
+    "e.g.": "for example",
+    "i.e.": "that is",
+    "etc.": "and so on",
+    "Make.com": "Make dot com"
+  },
+  "keep_as_written": [
+    "AI", "A.I.", "GPT", "ChatGPT", "LLM", "API", "UI", "GPU", "MCP", "OpenAI", "Gemini", "Midjourney",
+    "Sora", "Kling", "Runway", "ElevenLabs", "HeyGen", "Perplexity", "Cursor", "Lovable", "Notion",
+    "Figma", "CapCut", "GitHub", "DeepSeek", "Grok", "Llama", "Mistral", "Higgsfield", "Suno", "Pika",
+    "Luma", "Flux", "Krea", "Kokoro", "Replit", "Windsurf", "Manus", "Copilot", "YouTube", "TikTok"
+  ],
+  "never_write": {
+    "A I": "reads as 'uh eye'; write AI",
+    "Chwen": "reads as 'C H wen'; write Qwen and let the lexicon respell it"
+  }
+}

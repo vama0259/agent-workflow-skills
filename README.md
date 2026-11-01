@@ -4,7 +4,7 @@ Reusable agent skills by **Varun Malhotra** for multi-step work where an agent h
 
 The package has two groups:
 
-- **[AI video production](#ai-video-production)**: a router plus five skills that pick and drive open-source video tools (HyperFrames, onetake, collage B-roll, Clawd animation, Lemo-Opuscar).
+- **[AI video production](#ai-video-production)**: a router plus five skills that pick and drive open-source video tools (HyperFrames, onetake, collage B-roll, Clawd animation, Lemo-Opuscar), and a brand kit that keeps every reel on-brand with an English voiceover.
 - **[Evidence-first agent supervisor](#evidence-first-agent-supervisor)**: coordinates research, authorized actions and human review across interrupted runs, using career operations as the example domain.
 
 | Skill | Use it to |
@@ -15,6 +15,7 @@ The package has two groups:
 | [`video-collage-broll`](skills/video-collage-broll/SKILL.md) | Turn one voiceover line into a 9:16 paper-collage B-roll clip (paid MaxFusion MCP) |
 | [`video-clawd-animation`](skills/video-clawd-animation/SKILL.md) | Paint a short character cartoon with Clawd or a new character |
 | [`video-opuscar`](skills/video-opuscar/SKILL.md) | Direct a 30-60 s film in one of 51 code-rendered art styles with score and narration |
+| [`video-brand-kit`](skills/video-brand-kit/SKILL.md) | Keep 9:16 reels on one closed brand: fonts, colours, layouts, transitions, captions, English voice, plus a checker |
 | [`career-supervisor`](skills/career-supervisor/SKILL.md) | Coordinate evidence-based opportunity research, outreach and application review |
 
 ## Install
@@ -30,7 +31,8 @@ Install the whole video group:
 ```bash
 npx skills add vama0259/agent-workflow-skills --agent claude-code \
   --skill video-workflow --skill video-hyperframes --skill video-onetake \
-  --skill video-collage-broll --skill video-clawd-animation --skill video-opuscar
+  --skill video-collage-broll --skill video-clawd-animation --skill video-opuscar \
+  --skill video-brand-kit
 ```
 
 Replace `claude-code` with `codex`, `cursor` or another supported agent, or omit `--agent` to choose. For manual installation, copy a folder from `skills/` into your agent's skills directory, keeping any `references/` folder.
@@ -47,7 +49,7 @@ sh agent-workflow-skills/scripts/install-video-kit.sh        # builds ~/claude-v
 ~/claude-video-kit/bin/claude-video                          # a Claude Code session with the kit loaded
 ```
 
-The kit holds the six `video-*` skills plus all five upstream tools, pinned to the analysed commits:
+The kit holds the seven `video-*` skills plus all five upstream tools, pinned to the analysed commits:
 - HyperFrames' skills
 - onetake, without its demo films
 - the collage B-roll skill
@@ -76,6 +78,7 @@ The video skills don't contain the video tools. Each one tells the agent when to
 | A premium 10-30 s 16:9 launch teaser, **noncommercial** | `video-onetake` |
 | A 30-60 s film in a named art style, or a data, science or product story from real material | `video-opuscar` |
 | Anything else custom or long | `video-hyperframes` (`/general-video`) |
+| Reels, Shorts or a content series that must look and sound the same every time | `video-brand-kit` with the tool above (usually HyperFrames) |
 
 Some requests need more than one tool. `video-workflow` hands MP4s between them:
 
@@ -105,6 +108,26 @@ Example prompts:
 | Output | 16:9, 9:16, 1:1, 4K, alpha | 16:9, up to 4K60 | 9:16, 720p, 5 s | 16:9, 1080p | 1080p24 default, other sizes on request |
 
 Every tool needs a local shell. A chat-only surface can plan and write prompts but cannot render. HyperFrames sends anonymous telemetry by default, and `video-hyperframes` asks before any public feedback report or paid usage.
+
+### Reel brand kit
+
+[`video-brand-kit`](skills/video-brand-kit/SKILL.md) is a closed design system for vertical AI content. It has:
+- three fonts (Montserrat, Inter, JetBrains Mono)
+- nine colours
+- 1080×1920 safe zones
+- 8 frame layouts that fill the stage
+- 8 recipes that combine layout, motion, transition and sound
+- 8 allowed transitions and a banned list
+- caption rules
+- an English voice setup
+
+HyperFrames reads its [`frame.md`](skills/video-brand-kit/assets/frame.md) as the project's design spec. Its [`reelkit.py`](skills/video-brand-kit/scripts/reelkit.py) fails off-kit fonts and colours, prepares voiceover text from a [pronunciation lexicon](skills/video-brand-kit/assets/lexicon.json) and checks the voice's transcript against the script.
+
+The [voiceover notes](skills/video-brand-kit/references/voiceover.md) explain a common failure: a Hindi Kokoro voice, or `--lang hi`, sends English through the Hindi phonemizer, which turns numbers into Hindi words and adds stray sounds.
+
+A filled example lives in [`brands/omaiverse/`](skills/video-brand-kit/brands/omaiverse/frame.md), the kit for @omaiverse. It has six series (AI Breakdown, Claude Skills, SDE & AI Jobs, MBA & Business, Lifestyle, Clubs), each with its own chip colour and a [playbook](skills/video-brand-kit/brands/omaiverse/series.md). It is the default brand (`brands/default`): `video-workflow` loads the kit for every video, `reelkit.py init <project> --series <key>` starts each reel with it, and every check uses it unless `--brand` says otherwise.
+
+Example prompt: "Use video-workflow and video-brand-kit for omaiverse: a 30 s Claude Skills reel, English voiceover, captions."
 
 Read the [video tools analysis](skills/video-workflow/references/tool-analysis.md) for the evidence behind each routing rule: strengths, limits, maturity and the commit each project was analysed at.
 

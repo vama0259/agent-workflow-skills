@@ -52,6 +52,10 @@ Use the first row that matches the deliverable, not a word mentioned in passing.
 
 When two rows fit, prefer the tool with no paid service, then the permissive licence, then the shorter setup.
 
+## Brand kit: every video
+
+Load `video-brand-kit` with the chosen tool for **every** video, unless the person says not to. It holds the person's default brand (`brands/default`, currently @omaiverse): fonts, colours, layouts, transitions, captions, series and the English voice. Start each project with its `reelkit.py init <project> --series <key>`, which puts the brand's `frame.md` in the project root, and run its `speak`, `verify` and `lint` checks before delivery. A tool that cannot take the kit as a spec (onetake, Clawd animation, collage B-roll) makes its clip, and the brand is applied in the HyperFrames assembly pass.
+
 ## 4. Chain tools when one is not enough
 
 Hand off with files, not shared state: each tool writes an MP4 the next can place as a clip.

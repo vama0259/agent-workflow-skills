@@ -170,18 +170,24 @@ sound:
   licensed-music: "for trending or club tracks, export with voice and ambient only and add the track in Instagram's editor, so it stays licensed"
 
 voice:
-  language: en
-  provider-order: ["kokoro (local, free)", "heygen or elevenlabs, only with Om's approval of the cost", "Om's own recorded voice"]
+  language: en          # default; hinglish when Om asks for it (Devanagari for Hindi words, Latin for English words)
+  provider-order: ["elevenlabs (voice of record, via the Zapier ElevenLabs connection)", "kokoro (local, free; English only)", "Om's own recorded voice"]
+  elevenlabs:
+    voice: "Ayush — Creator"
+    voice_id: 00KdCZfPLQodWob7wL6g
+    model: eleven_v3
+    settings: { stability: 0.45, similarity_boost: 0.75, style: 0, speed: 1.08 }
+    note: "chosen by Om; male, matches the Om persona. Never mix in a female voice."
   kokoro:
     default: af_heart
     alternates: [af_bella, bf_emma, am_michael, am_fenrir, am_puck]
     lang: en-us
     speed: [1.0, 1.1]
-    banned: ["hf_alpha", "hf_beta", "hm_omega", "hm_psi", "any voice not starting a_ or b_", "am_adam (grade F+)", "--lang hi or any non-English --lang"]
+    banned: ["hf_alpha", "hf_beta", "hm_omega", "hm_psi", "any voice not starting a_ or b_", "am_adam (grade F+)", "--lang hi or any non-English --lang", "any Hindi or Hinglish script"]
   one-voice-rule: "pick one narrator voice for all narrated series and keep it; the voice is part of the brand"
   chunk: "1-3 sentences per TTS call (about 100-300 characters)"
   lexicon: lexicon.json
-  verify: "transcribe the rendered voice and run reelkit.py verify --brand omaiverse; fail over 8% word error"
+  verify: "transcribe the rendered voice (ElevenLabs Speech-to-Text scribe_v1 with word timestamps, or hyperframes transcribe for English) and run reelkit.py verify; fail over 8% word error, and every English tech term must survive"
 ---
 
 # omaiverse brand kit
@@ -225,6 +231,6 @@ a coloured series tag so viewers know in a second which show they are watching, 
   "tech" gradients. No other company's logo or colours as omaiverse branding.
 - No text in the reserved strips: top 250 px, bottom 350 px, right 120 px.
 - No crossfades and nothing from the banned transition list.
-- No Hindi or Hinglish in an English voiceover script, and no Hindi Kokoro voice.
+- No Hindi Kokoro voice, ever. Hinglish only through ElevenLabs, with Hindi words in Devanagari and English tech words kept in English.
 - In Clubs and Lifestyle, no identifiable stranger as the focus of a shot without their OK,
   and no copyrighted track burned into the export.

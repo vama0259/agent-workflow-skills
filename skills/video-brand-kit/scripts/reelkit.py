@@ -3,7 +3,7 @@
 
   reelkit.py init   <project> --series KEY [--brand NAME]          start a reel: kit + storyboard in the project
   reelkit.py lint   <project> [--brand NAME | --kit frame.md]     off-kit fonts, colours, tiny text, wrong canvas
-  reelkit.py speak  <script.txt> [--brand NAME] [--voice ID] [--lang L] [-o vo.txt]
+  reelkit.py speak  <script.txt> [--brand NAME] [--provider kokoro|elevenlabs] [--voice ID] [--lang en-us|en-gb|hinglish] [-o vo.txt]
   reelkit.py verify <script.txt> <transcript.json> [--brand NAME] [--max-wer 0.08]
 
 --brand NAME uses brands/NAME/frame.md and brands/NAME/lexicon.json (which extends the default lexicon).
@@ -229,17 +229,22 @@ def cmd_speak(args):
     terms, keep, never = load_lexicon(args.lexicon)
     raw = open(args.script, encoding="utf-8").read()
     errors, warnings = [], []
-    if args.voice:
+    hinglish = args.lang == "hinglish"
+    if hinglish and args.provider == "kokoro":
+        errors.append("--lang hinglish needs --provider elevenlabs; Kokoro reads mixed Hindi-English through the Hindi phonemizer and garbles it")
+    if hinglish and not DEVANAGARI.search(raw):
+        warnings.append("Hinglish script has no Devanagari; write Hindi words in Devanagari and English words in Latin so the voice says each correctly")
+    if args.voice and args.provider == "kokoro":
         if not GOOD_VOICE.match(args.voice):
             errors.append(f"voice '{args.voice}' is not an American (a*) or British (b*) English Kokoro voice")
         elif args.voice in BAD_VOICES:
             errors.append(f"voice '{args.voice}' is graded F+ in Kokoro VOICES.md; use af_heart, af_bella, bf_emma or am_michael")
         if args.voice.startswith("b") and args.lang == "en-us":
             warnings.append("British voice with --lang en-us; pass --lang en-gb")
-    if args.lang not in ("en-us", "en-gb", "en"):
-        errors.append(f"--lang {args.lang} is not English; the kit's voice language is en")
+    if args.lang not in ("en-us", "en-gb", "en", "hinglish"):
+        errors.append(f"--lang {args.lang} is not supported; use en-us, en-gb or hinglish")
     for n, line in enumerate(raw.splitlines(), 1):
-        if DEVANAGARI.search(line):
+        if DEVANAGARI.search(line) and not hinglish:
             errors.append(f"line {n}: Devanagari text in an English voiceover")
         if URL.search(line):
             errors.append(f"line {n}: URL; write how it is said (\"link in bio\", \"example dot com\")")
@@ -251,7 +256,7 @@ def cmd_speak(args):
                 warnings.append(f"line {n}: '{tok}' may be read letter by letter or as a word; add it to the lexicon")
     spoken = normalise(apply_terms(raw, terms))
     for n, line in enumerate(spoken.splitlines(), 1):
-        if 0 < len(line.strip()) < SHORT_CHARS:
+        if args.provider == "kokoro" and 0 < len(line.strip()) < SHORT_CHARS:
             warnings.append(f"line {n}: '{line.strip()}' is short for Kokoro; synthesise it together with its neighbours")
         if len(line) > 400:
             warnings.append(f"line {n}: {len(line)} characters; split into 1-3 sentence chunks so the voice does not rush")
@@ -271,7 +276,7 @@ def cmd_speak(args):
 
 def words(text):
     text = text.lower().replace("’", "'")
-    return re.findall(r"[a-z0-9]+(?:'[a-z]+)?", text)
+    return re.findall(r"[a-z0-9\u0900-\u097F]+(?:'[a-z]+)?", text)
 
 
 def transcript_words(path):
@@ -320,6 +325,7 @@ def main():
     speak.add_argument("script")
     speak.add_argument("--voice")
     speak.add_argument("--lang", default="en-us")
+    speak.add_argument("--provider", choices=["kokoro", "elevenlabs"], default="kokoro")
     speak.add_argument("--lexicon", default=DEFAULT_LEXICON)
     speak.add_argument("--brand")
     speak.add_argument("-o", "--output")

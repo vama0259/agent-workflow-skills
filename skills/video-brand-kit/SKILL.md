@@ -15,6 +15,7 @@ Files:
 - [`assets/lexicon.json`](assets/lexicon.json): how brand and tool names are spoken.
 - [`references/edit-grammar.md`](references/edit-grammar.md): script and beat sheet, the 8 layouts, the 8 recipes (layout + motion + transition + sound), caption rules and the pre-render checklist.
 - [`references/voiceover.md`](references/voiceover.md): why voices came out half-Hindi, and the exact voice steps.
+- [`references/reel-rebuild.md`](references/reel-rebuild.md): rebuilding a reel Om shares ("make the same"): teardown, Hinglish script, ElevenLabs voice, word-synced build, the rating loop, cover and caption.
 - [`references/research.md`](references/research.md): sources and what was measured versus chosen.
 - [`scripts/reelkit.py`](scripts/reelkit.py): `lint`, `speak` and `verify` (Python 3, standard library only). `--brand <name>` uses `brands/<name>/`.
 - [`brands/omaiverse/`](brands/omaiverse/frame.md): the filled kit for @omaiverse, with six series and their [playbooks](brands/omaiverse/series.md). `assets/frame.md` is the blank default for other brands.
@@ -33,7 +34,7 @@ Files:
    ```
 
    This copies the brand's `frame.md` into the project, where HyperFrames reads it as the design spec (`video-hyperframes`), and writes a `STORYBOARD.md` with the series chip, colour, voice and call to action filled in. With HyperFrames, run `npx hyperframes init` first (it refuses a folder that is not empty), then `reelkit.py init` on the same folder. Read that series' playbook. With any other editor, follow `frame.md` as a written spec.
-2. **Script:** follow `references/edit-grammar.md` §1. English only, one idea, 20-45 s, a 6-word-max hook.
+2. **Script:** follow `references/edit-grammar.md` §1: one idea, 20-45 s, a 6-word-max hook. English by default; Hinglish when the person asks, through ElevenLabs only. When the person shares a reel to recreate, follow `references/reel-rebuild.md` from the start.
 3. **Beat sheet:** write `STORYBOARD.md` with one row per beat: time, words, layout (L1-L8), recipe (R1-R8), transition out (T1-T9), SFX, filling in the table `init` wrote. Check it against §7 of the edit grammar before building anything. Show it to the person for approval.
 4. **Voice** (`references/voiceover.md`):
 
@@ -44,7 +45,7 @@ Files:
    python3 <skill>/scripts/reelkit.py verify script.txt assets/transcript.json
    ```
 
-   Never use a Hindi Kokoro voice (`hf_*`, `hm_*`) or `--lang hi` for English. Synthesise 1-3 sentences per call, never one caption at a time. Fix failures through the lexicon, then re-run.
+   For the brand's ElevenLabs voice or a Hinglish script, use `speak --provider elevenlabs [--lang hinglish]` and ElevenLabs Speech-to-Text for the transcript. Never use a Hindi Kokoro voice (`hf_*`, `hm_*`) or `--lang hi` for English. Synthesise 1-3 sentences per call, never one caption at a time. Fix failures through the lexicon, then re-run.
 5. **Build** with the kit's layouts and recipes only. Captions come from the original script and the transcript timings.
 6. **Lint, then preview:**
 

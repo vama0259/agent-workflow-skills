@@ -44,3 +44,12 @@ Cloud voices fail in a related way: multilingual models (HeyGen, ElevenLabs) gue
 ## Accent
 
 Kokoro has no Indian-English voice: its Indian voices are Hindi. For an Indian-English accent, use a paid provider voice listed as English (India) with the language pinned to English, with the person's approval of the cost. Run `verify` on it like any other voice.
+
+## Hinglish with ElevenLabs
+
+When Om asks for Hindi-English, use ElevenLabs only, never Kokoro. The omaiverse voice of record is "Ayush — Creator" (`00KdCZfPLQodWob7wL6g`, `eleven_v3`, settings in `brands/omaiverse/frame.md`), reached through the Zapier ElevenLabs connection.
+
+- Write Hindi words in Devanagari and English words in Latin script; keep tech words in English.
+- `reelkit.py speak script.txt --lang hinglish --provider elevenlabs -o vo.txt` checks it. It refuses Hinglish with Kokoro and warns if there is no Devanagari.
+- Transcribe with ElevenLabs Speech-to-Text (`scribe_v1`, word timestamps), then `reelkit.py verify`, which compares Devanagari and Latin words alike.
+- Hindi takes about 58% longer to say than the same English sentence, so write to the target length rather than translating.

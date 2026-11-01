@@ -47,7 +47,12 @@ Kokoro has no Indian-English voice: its Indian voices are Hindi. For an Indian-E
 
 ## Hinglish with ElevenLabs
 
-When Om asks for Hindi-English, use ElevenLabs only, never Kokoro. The omaiverse voice of record is "Ayush — Creator" (`00KdCZfPLQodWob7wL6g`, `eleven_v3`, settings in `brands/omaiverse/frame.md`), reached through the Zapier ElevenLabs connection.
+When Om asks for Hindi-English, use ElevenLabs only, never Kokoro. For omaiverse, every narrated reel uses Om's own cloned voices, through the Zapier ElevenLabs connection: "om Hindi Voice" (`k2wSOFjoeAf2dogWLjMV`) for Hindi-English, and "Om Voice" (`OIuMZwCGrdCumuvntFIq`) for English. The model and settings are in `brands/omaiverse/frame.md`.
+
+Tested 1 November 2026 with `eleven_multilingual_v2`, transcribed back with ElevenLabs Speech-to-Text:
+- **Hindi clone, Hindi-English line:** every Hindi and English word came back correctly (driver, ETA, distance, AI, breakdowns, follow) in 10.4 s.
+- **English clone, English line:** every word came back correctly, including "40 LPA" and "SDE".
+- **Brand name:** written as "omaiverse" it was heard as "Omiverse" (Hindi clone) and "OMAVERSE" (English clone); respelled "Ohm AI verse" it was heard as "Om AI Verse". Always run `reelkit.py speak` so the lexicon respells it.
 
 - Write Hindi words in Devanagari and English words in Latin script; keep tech words in English.
 - `reelkit.py speak script.txt --lang hinglish --provider elevenlabs -o vo.txt` checks it. It refuses Hinglish with Kokoro and warns if there is no Devanagari.

@@ -171,13 +171,16 @@ sound:
 
 voice:
   language: en          # default; hinglish when Om asks for it (Devanagari for Hindi words, Latin for English words)
-  provider-order: ["elevenlabs (voice of record, via the Zapier ElevenLabs connection)", "kokoro (local, free; English only)", "Om's own recorded voice"]
-  elevenlabs:
-    voice: "Ayush — Creator"
-    voice_id: 00KdCZfPLQodWob7wL6g
-    model: eleven_v3
-    settings: { stability: 0.45, similarity_boost: 0.75, style: 0, speed: 1.08 }
-    note: "chosen by Om; male, matches the Om persona. Never mix in a female voice."
+  provider-order: ["elevenlabs: Om's own cloned voices (always)", "kokoro (local, free; English only, and only if ElevenLabs is unavailable)"]
+  elevenlabs:               # reached through the Zapier ElevenLabs connection
+    model: eleven_multilingual_v2    # tested with both clones on 2026-11-01
+    settings: { stability: 0.45, similarity_boost: 0.75, style: 0, speed: 1.05 }   # starting point for reels; the clones' saved defaults are 0.5 / 0.75 / 0 / 1.0
+    voices:
+      hinglish: { name: "om Hindi Voice", voice_id: k2wSOFjoeAf2dogWLjMV, use: "Hindi or Hindi-English scripts (Devanagari for Hindi, Latin for English words)" }
+      english:  { name: "Om Voice", voice_id: OIuMZwCGrdCumuvntFIq, use: "English-only scripts" }
+    fallback: { name: "Ayush — Creator", voice_id: 00KdCZfPLQodWob7wL6g, model: eleven_v3, use: "only if Om's clones are unavailable" }
+    rule: "Om's own voices are the brand voice for every narrated reel. Never use a stock or female voice in their place without asking."
+    brand-name: "always respell omaiverse as 'Ohm AI verse' (lexicon); written plainly it was heard as 'Omiverse' (Hindi clone) and 'OMAVERSE' (English clone)"
   kokoro:
     default: af_heart
     alternates: [af_bella, bf_emma, am_michael, am_fenrir, am_puck]

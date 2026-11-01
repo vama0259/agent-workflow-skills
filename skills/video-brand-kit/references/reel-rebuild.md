@@ -30,7 +30,7 @@ yt-dlp -o 'ref.%(ext)s' --no-playlist '<url>'       # one attempt; on a login wa
 - Pick the series from `brands/omaiverse/series.md` (most explainers are AI Breakdown, SDE & AI Jobs or MBA & Business) and run `reelkit.py init <dir> --series <key>`.
 - **Write to the target length, never translate.** Hindi runs about 58% longer than English for the same sentence (6.3 s became 10 s). Keep tech words in English (driver, route, ETA, model, prompt): shorter, and how Indian creators speak.
 - **Mixed script for the voice:** Devanagari for Hindi words, Latin for English words.
-- **Voice of record:** ElevenLabs "Ayush — Creator" (`00KdCZfPLQodWob7wL6g`), model `eleven_v3`, stability 0.45, similarity 0.75, style 0, speed 1.08. It is in `brands/omaiverse/frame.md`.
+- **Voice: always Om's own clones** (in `brands/omaiverse/frame.md`): "om Hindi Voice" (`k2wSOFjoeAf2dogWLjMV`) for Hindi-English scripts, "Om Voice" (`OIuMZwCGrdCumuvntFIq`) for English-only scripts. Model `eleven_multilingual_v2`, stability 0.45, similarity 0.75, style 0, speed 1.05. "Ayush — Creator" is only the fallback.
 - Check and prepare the text: `reelkit.py speak script.txt --lang hinglish --provider elevenlabs -o vo.txt`.
 - **Pronunciation check:** run the voice back through ElevenLabs Speech-to-Text, then `reelkit.py verify script.txt transcript.json`. Every English term must survive.
 
